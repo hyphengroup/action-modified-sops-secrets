@@ -1,6 +1,12 @@
 # `modified-sops-secrets` GitHub Action
 
 <!-- action-docs-description -->
+## Description
+
+Get modified SopsSecrets
+
+
+<!-- action-docs-description -->
 
 ## Usage
 
@@ -44,7 +50,32 @@ jobs:
 ```
 
 <!-- action-docs-inputs -->
+## Inputs
+
+| parameter | description | required | default |
+| - | - | - | - |
+| files | Check for changes using these grep regex | `true` |  |
+
+
+
+<!-- action-docs-inputs -->
 
 <!-- action-docs-outputs -->
+## Outputs
+
+| parameter | description |
+| - | - |
+| modified-secrets | space separated list of modified sops-secrets |
+| any-modified | returns true if any sops-secrets were modified |
+
+
+
+<!-- action-docs-outputs -->
+
+<!-- action-docs-runs -->
+## Runs
+
+This action is an `composite` action.
+
 
 <!-- action-docs-runs -->
