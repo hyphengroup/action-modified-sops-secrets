@@ -1,0 +1,38 @@
+name: 'Modified SopsSecrets'
+description: 'Get modified SopsSecrets'
+inputs:
+  files:
+    description: 'Check for changes using these grep regex'
+    required: true
+outputs:
+  modified-secrets:
+    description: 'space separated list of modified sops-secrets'
+    value: ${{ steps.filtered.outputs.modified-secrets }}
+  any-modified:
+    description: 'returns true if any sops-secrets were modified'
+    value: ${{ steps.filtered.outputs.any-modified }}
+runs:
+  using: 'composite'
+  steps:
+    - id: files
+      uses: tj-actions/changed-files@v11.7
+      with:
+        files: ${{ inputs.files }}
+    - id: filtered
+      shell: bash
+      env:
+        # INPUT_<VARIABLE_NAME> is not available in Composite run steps
+        # https://github.community/t/input-variable-name-is-not-available-in-composite-run-steps/127611
+        INPUT_MODIFIED_FILES: ${{ steps.files.outputs.all_modified_files }}
+      run: |
+        echo "::group::changed-secrets"
+        # ref: https://www.baeldung.com/linux/join-multiple-lines#sed
+        SOPS_SECRETS=$(grep -xl "kind: SopsSecret" $INPUT_MODIFIED_FILES | sed ':a; N; $!ba; s/\n/ /g')
+        if [[ -n "${SOPS_SECRETS}" ]]; then
+          echo "modified-secrets: $SOPS_SECRETS"
+          echo "::set-output name=any-modified::true"
+          echo "::set-output name=modified-secrets::$SOPS_SECRETS"
+        else
+          echo "no secrets modified"
+          echo "::set-output name=any-modified::false"
+        fi
