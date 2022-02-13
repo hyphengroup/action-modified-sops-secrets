@@ -26,7 +26,7 @@ runs:
         INPUT_MODIFIED_FILES: ${{ steps.files.outputs.all_modified_files }}
       run: |
         echo "::group::changed-secrets"
-        if [[ -z "${SOPS_SECRETS}" ]]; then
+        if [[ -z "${INPUT_MODIFIED_FILES}" ]]; then
           echo "no secrets modified"
           echo "::set-output name=any-modified::false"
           exit 0
