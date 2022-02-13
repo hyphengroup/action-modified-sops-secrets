@@ -26,6 +26,12 @@ runs:
         INPUT_MODIFIED_FILES: ${{ steps.files.outputs.all_modified_files }}
       run: |
         echo "::group::changed-secrets"
+        if [[ -z "${SOPS_SECRETS}" ]]; then
+          echo "no secrets modified"
+          echo "::set-output name=any-modified::false"
+          exit 0
+        fi
+
         # ref: https://www.baeldung.com/linux/join-multiple-lines#sed
         SOPS_SECRETS=$(grep -xl "kind: SopsSecret" $INPUT_MODIFIED_FILES | sed ':a; N; $!ba; s/\n/ /g')
         if [[ -n "${SOPS_SECRETS}" ]]; then
