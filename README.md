@@ -28,7 +28,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - id: foo-secrets
-      uses: hyphengroup/action-modified-sops-secrets@v0.1.0
+      uses: hyphengroup/action-modified-sops-secrets@v0.1.1
       with:
         files: |
           ^foo/.*\.yaml$
@@ -43,7 +43,7 @@ jobs:
       with:
         role-to-assume: arn:aws:iam::1234567890:role/foo-kms-decrypt
         aws-region: ap-southeast-1
-    - uses: hyphengroup/test-modified-sops-secrets@v0.1.0
+    - uses: hyphengroup/action-test-sops-secrets@v0.1.0
       if: steps.foo-secrets.outputs.any-modified == 'true'
       with:
         files: ${{ steps.foo-secrets.outputs.modified-secrets }}
